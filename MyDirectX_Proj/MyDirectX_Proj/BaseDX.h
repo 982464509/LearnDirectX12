@@ -41,13 +41,23 @@ protected:
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> m_fence;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_commandAllocator;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_CmdListAllocator;
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_commandQueue;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_commandList;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> m_renderTargets[FrameCount];
 	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
 
+	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
+	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState;
+
+	uint32_t mRtvDescriptorSize = 0;
+	uint32_t mDsvDescriptorSize = 0;
+	uint32_t mCbvSrvUavDescriptorSize = 0;
+
+	bool      m4xMsaaState = false;    // 4X MSAA enabled
+	uint32_t      m4xMsaaQuality = 0;      // quality level of 4X MSAA
 
 	uint32_t m_width;
 	uint32_t m_height;

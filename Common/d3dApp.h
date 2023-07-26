@@ -21,6 +21,10 @@
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+using Microsoft::WRL::ComPtr;
+using namespace std;
+using namespace DirectX;
+
 class D3DApp
 {
 protected:
@@ -176,10 +180,12 @@ protected:
 	UINT mCbvSrvUavDescriptorSize = 0;
 
     // 用户应该在派生类的派生构造函数中自定义这些初始值
-	std::wstring mMainWndCaption = L"d3d App ";
+	std::wstring mMainWndCaption = L"base D3DApp";
+
 	D3D_DRIVER_TYPE md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
     DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
     DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	int mClientWidth = 800;
-	int mClientHeight = 600;
+
+	int mClientWidth = 1280;
+	int mClientHeight = 720;
 };

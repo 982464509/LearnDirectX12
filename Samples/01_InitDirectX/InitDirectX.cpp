@@ -82,7 +82,8 @@ void InitDirect3D::Draw(const GameTimer& gt)
     // 清除后台缓冲区和深度缓冲区
     auto currentBackBufferView = CurrentBackBufferView();
     auto depthStencilView = DepthStencilView();
-    mCommandList->ClearRenderTargetView(currentBackBufferView, Colors::Khaki, 0, nullptr); //nullptr表示清除整个渲染目标                
+
+    mCommandList->ClearRenderTargetView(currentBackBufferView, Colors::CornflowerBlue, 0, nullptr); //nullptr表示清除整个渲染目标                
     mCommandList->ClearDepthStencilView(depthStencilView,
         D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL,   //即将清除的是深度缓冲区还是模板缓冲区。用按位或运算符连接两者表示同时清除这两种缓冲区。
         1.0f,   //此值来清除深度缓冲区
@@ -99,18 +100,18 @@ void InitDirect3D::Draw(const GameTimer& gt)
         D3D12_RESOURCE_STATE_PRESENT);
     mCommandList->ResourceBarrier(1, &resourceTarget2Present);
 
+    // 绘制完毕：
 
     // 完成命令的记录
-    mCommandList->Close();
-    // 将待执行的命令列表加入命令队列
-    ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
-    mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-    // 交换后台缓冲区和前台缓冲区。与此同时，也必须对索引进行更新，使之一直指向交换后的当前后台缓冲区。
-    // 这样一来，我们才可以正确地将下一帧场景渲染到新的后台缓冲区。
-    mSwapChain->Present(0, 0);
+    mCommandList->Close();   
+    ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };     // 将待执行的命令列表加入命令队列
+    // 正式提交：
+    mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);   
+
+    // 交换后台缓冲区和前台缓冲区
+    mSwapChain->Present(0, 0);   
     mCurrBackBuffer = (mCurrBackBuffer + 1) % SwapChainBufferCount;
 
-    // 等待此帧的命令执行完毕。当前的实现没有什么效率，也过于简单
-    // 我们在后面将重新组织渲染部分的代码，以免在每一帧都要等待
+    // 等待此帧的命令执行完毕。当前的实现没有什么效率，也过于简单我们在后面将重新组织渲染部分的代码，以免在每一帧都要等待    
     FlushCommandQueue();
 }

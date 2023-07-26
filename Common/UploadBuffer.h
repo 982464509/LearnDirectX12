@@ -29,9 +29,10 @@ public:
         {
             mElementByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(T));
         }            
-        auto heap = &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
-        device->CreateCommittedResource(heap, D3D12_HEAP_FLAG_NONE, &CD3DX12_RESOURCE_DESC::Buffer(mElementByteSize * elementCount)
-            , D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&mUploadBuffer));
+        auto heap = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+        auto buffer = CD3DX12_RESOURCE_DESC::Buffer(mElementByteSize * elementCount);
+        device->CreateCommittedResource(&heap, D3D12_HEAP_FLAG_NONE, &buffer
+            ,D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&mUploadBuffer));
             
         mUploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mMappedData));
         // 只要还会修改当前的资源，我们就无须取消映射

@@ -9,6 +9,7 @@ using Microsoft::WRL::ComPtr;
 using namespace std;
 using namespace DirectX;
 
+
 LRESULT CALLBACK
 MainWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -25,17 +26,18 @@ D3DApp* D3DApp::GetApp()
 
 D3DApp::D3DApp(HINSTANCE hInstance)
 :	mhAppInst(hInstance)
-{
-    // Only one D3DApp can be constructed.
+{    
     assert(mApp == nullptr);
     mApp = this;
 }
 
 D3DApp::~D3DApp()
 {
-	if(md3dDevice != nullptr)
-		//刷新命令队列。在销毁GPU引用的资源以前，必须等待GPU处理完队列中的所有命令
+	if (md3dDevice)
+	{
+		//刷新命令队列。在销毁GPU引用的资源以前，必须等待GPU处理完队列中的所有命令		
 		FlushCommandQueue();
+	}		
 }
 
 HINSTANCE D3DApp::AppInst()const
@@ -147,6 +149,7 @@ void D3DApp::OnResize()
 	}		
     mDepthStencilBuffer.Reset();
 	
+
 	// Resize the swap chain.
 	mSwapChain->ResizeBuffers(SwapChainBufferCount, mClientWidth, mClientHeight, mBackBufferFormat, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 		
@@ -510,7 +513,7 @@ void D3DApp::FlushCommandQueue()
 	mCommandQueue->Signal(mFence.Get(), mCurrentFence);
 
 	// 在CPU端等待GPU，直到后者执行完这个围栏点之前的所有命令
-    if(mFence->GetCompletedValue() < mCurrentFence)	//如果小于，说明GPU没有处理完所有命令
+    if(mFence->GetCompletedValue() < mCurrentFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
 		// 若GPU命中当前的围栏（即执行到Signal()指令，修改了围栏值），则激发预定事件
@@ -527,7 +530,7 @@ ID3D12Resource* D3DApp::CurrentBackBuffer()const
 }
 
 //访问描述符堆内部的描述符。可获取当前 后台缓冲区的RTV
-D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView()const
+D3D12_CPU_DESCRIPTOR_HANDLE D3DApp::CurrentBackBufferView() const
 {
 	// CD3DX12构造函数根据给定的偏移量找到当前后台缓冲区的RTV
 	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
