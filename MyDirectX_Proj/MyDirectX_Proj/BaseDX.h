@@ -17,12 +17,16 @@ class BaseDX
 {
 public:
 	BaseDX(uint32_t width, uint32_t height, std::wstring name);
-	~BaseDX();
+	BaseDX(const BaseDX& rhs) = delete;
+	BaseDX& operator=(const BaseDX& rhs) = delete;
+	~BaseDX()=default;
 
-	virtual void OnInit() = 0;
-	virtual void OnUpdate() = 0;
-	virtual void OnRender() = 0;
-	virtual void OnDestroy() = 0;
+	virtual void OnInit();
+	virtual void OnResize();
+	virtual void OnLoadAssets() = 0;
+	virtual void OnUpdate();
+	virtual void OnRender();
+	virtual void OnDestroy();
 
 	virtual void OnMouseDown(WPARAM btnState, int x, int y) {}
 	virtual void OnMouseUp(WPARAM btnState, int x, int y) {}
@@ -33,37 +37,62 @@ public:
 	const wchar_t* GetTitle() const { return m_title.c_str(); }
 
 protected:
-	static const uint8_t FrameCount = 2;
-
 	Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
-	Microsoft::WRL::ComPtr<IDXGISwapChain3> m_swapChain;
+	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
 	Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 
-	Microsoft::WRL::ComPtr<ID3D12Fence> m_fence;
+	//围栏
+	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
+	UINT64 mCurrentFence = 0;
 
-	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> m_CmdListAllocator;
-	Microsoft::WRL::ComPtr<ID3D12CommandQueue> m_commandQueue;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> m_commandList;
+	//命令队列
+	Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
+	//命令分配器
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
+	//命令列表
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> m_renderTargets[FrameCount];
+	static const int SwapChainBufferCount = 2;
+
+	//渲染目标视图 （描述符堆）
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
+	//深度/模板视图（描述符堆）
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
+
+	//交换链中的缓冲区
+	Microsoft::WRL::ComPtr<ID3D12Resource> mSwapChainBuffer[SwapChainBufferCount];
 	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
 
-	Microsoft::WRL::ComPtr<ID3D12RootSignature> m_rootSignature;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
-	Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pipelineState;
+	//用来记录当前后台缓冲区的索引
+	int mCurrBackBuffer = 0;
 
-	uint32_t mRtvDescriptorSize = 0;
-	uint32_t mDsvDescriptorSize = 0;
-	uint32_t mCbvSrvUavDescriptorSize = 0;
+	//视口
+	D3D12_VIEWPORT mScreenViewport;
+	//裁剪矩形
+	D3D12_RECT mScissorRect;
 
-	bool      m4xMsaaState = false;    // 4X MSAA enabled
-	uint32_t      m4xMsaaQuality = 0;      // quality level of 4X MSAA
+	//rtv描述符大小，使用这个进行偏移计算进行迭代
+	UINT mRtvDescriptorSize = 0;
+	UINT mDsvDescriptorSize = 0;
+	UINT mCbvSrvUavDescriptorSize = 0;
+
+	D3D_DRIVER_TYPE md3dDriverType = D3D_DRIVER_TYPE_HARDWARE;
+	DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	uint32_t m_width;
 	uint32_t m_height;
 	float m_aspectRatio;
+
+	bool      m4xMsaaState = false;    // 4X MSAA enabled
+	UINT      m4xMsaaQuality = 0;      // quality level of 4X MSAA
 	
-	void SetCustomWindowText(LPCWSTR text);
+	ID3D12Resource* CurrentBackBuffer()const;
+	D3D12_CPU_DESCRIPTOR_HANDLE DepthStencilView()const;
+	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
+
+	void SetCustomWindowText(LPCWSTR text);	
+	void FlushCommandQueue();
 
 private:
 	std::wstring m_title;
