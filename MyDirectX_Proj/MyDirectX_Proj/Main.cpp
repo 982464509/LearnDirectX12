@@ -6,7 +6,7 @@
 
 
 #include <windows.h>
-#include "Box.h"
+#include "ClearColor.h"
 
 
 // Ä¬ÈÏÆÁÄ»
@@ -15,6 +15,6 @@ static int gClientHeight = 720;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
-	auto box = Box(gClientWidth, gClientHeight, L"D3D Box");
-	return WinApplication::Run(&box, hInstance, nCmdShow);
+	auto clearColor = ClearColor(gClientWidth, gClientHeight, L"D3D Color");
+	return WinApplication::Run(&clearColor, hInstance, nCmdShow);
 }

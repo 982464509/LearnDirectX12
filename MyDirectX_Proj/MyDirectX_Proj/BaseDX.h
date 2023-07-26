@@ -37,41 +37,29 @@ public:
 	const wchar_t* GetTitle() const { return m_title.c_str(); }
 
 protected:
+	static const int SwapChainBufferCount = 2;
+	int mCurrBackBuffer = 0;
+
 	Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
 	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
 	Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 
-	//围栏
 	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
 	UINT64 mCurrentFence = 0;
-
-	//命令队列
+	
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> mCommandQueue;
-	//命令分配器
 	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> mDirectCmdListAlloc;
-	//命令列表
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> mCommandList;
-
-	static const int SwapChainBufferCount = 2;
-
-	//渲染目标视图 （描述符堆）
+		
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
-	//深度/模板视图（描述符堆）
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
-
-	//交换链中的缓冲区
+	
 	Microsoft::WRL::ComPtr<ID3D12Resource> mSwapChainBuffer[SwapChainBufferCount];
 	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
-
-	//用来记录当前后台缓冲区的索引
-	int mCurrBackBuffer = 0;
-
-	//视口
-	D3D12_VIEWPORT mScreenViewport;
-	//裁剪矩形
+	 	
+	D3D12_VIEWPORT mScreenViewport;	
 	D3D12_RECT mScissorRect;
 
-	//rtv描述符大小，使用这个进行偏移计算进行迭代
 	UINT mRtvDescriptorSize = 0;
 	UINT mDsvDescriptorSize = 0;
 	UINT mCbvSrvUavDescriptorSize = 0;
@@ -80,9 +68,9 @@ protected:
 	DXGI_FORMAT mBackBufferFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
-	uint32_t m_width;
-	uint32_t m_height;
-	float m_aspectRatio;
+	uint32_t m_width = 0;
+	uint32_t m_height = 0;
+	float m_aspectRatio = 0;
 
 	bool      m4xMsaaState = false;    // 4X MSAA enabled
 	UINT      m4xMsaaQuality = 0;      // quality level of 4X MSAA
