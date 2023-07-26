@@ -15,57 +15,27 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DXHelper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseDX.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ClearColor.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="SimplerBox.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\MathHelper.cpp">
+    <ClCompile Include="..\..\Common\d3dApp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Common\d3dUtil.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\GameTimer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InitDirectX.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="d3dx12.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseDX.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DXHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ClearColor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SimplerBox.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Common\MathHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Common\UploadBuffer.h">
+    <ClInclude Include="..\..\Common\d3dApp.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\d3dUtil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\GameTimer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

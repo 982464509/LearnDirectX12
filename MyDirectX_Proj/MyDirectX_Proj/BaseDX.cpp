@@ -13,8 +13,7 @@ BaseDX::BaseDX(uint32_t width, uint32_t height, std::wstring name):
     m_width(width),
     m_height(height),
     m_title(name)
-{
-    m_aspectRatio = static_cast<float>(width / height);
+{    
 }
 
 void BaseDX::OnDestroy()
@@ -91,9 +90,7 @@ void BaseDX::OnInit()
     dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
     dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     dsvHeapDesc.NodeMask = 0;
-    md3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf()));
-
-    OnResize();
+    md3dDevice->CreateDescriptorHeap(&dsvHeapDesc, IID_PPV_ARGS(mDsvHeap.GetAddressOf()));    
 }
 
 void BaseDX::OnResize()
@@ -173,10 +170,7 @@ void BaseDX::OnResize()
 
 void BaseDX::OnUpdate(){}
 
-void BaseDX::OnRender()
-{
-
-}
+void BaseDX::OnRender() {}
 
 
 void BaseDX::FlushCommandQueue()

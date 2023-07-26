@@ -69,8 +69,7 @@ protected:
 	DXGI_FORMAT mDepthStencilFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 
 	uint32_t m_width = 0;
-	uint32_t m_height = 0;
-	float m_aspectRatio = 0;
+	uint32_t m_height = 0;	
 
 	bool      m4xMsaaState = false;    // 4X MSAA enabled
 	UINT      m4xMsaaQuality = 0;      // quality level of 4X MSAA

@@ -13,6 +13,7 @@ ClearColor::ClearColor(uint32_t width, uint32_t height, std::wstring name):BaseD
 void ClearColor::OnInit()
 {
 	BaseDX::OnInit();
+    ClearColor::OnResize();
 }
 
 void ClearColor::OnLoadAssets()
@@ -25,7 +26,10 @@ void ClearColor::OnResize()
 }
 
 void ClearColor::OnUpdate() {}
-void ClearColor::OnDestroy() {}
+void ClearColor::OnDestroy() 
+{
+    BaseDX::OnDestroy();
+}
 
 void ClearColor::OnRender()
 {    
