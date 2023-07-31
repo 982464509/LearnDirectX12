@@ -39,6 +39,9 @@
     <ClCompile Include="..\..\Common\d3dUtil.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3dx12.h">
@@ -66,6 +69,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\d3dUtil.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

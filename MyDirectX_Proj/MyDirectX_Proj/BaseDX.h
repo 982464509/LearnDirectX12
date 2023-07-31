@@ -7,11 +7,15 @@
 #include "d3dx12.h"
 #include "WindowsWapper.h"
 #include "DXHelper.h"
+#include <dxgi1_4.h>
+
+#include "Device.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+class Device;
 
 class BaseDX
 {
@@ -40,9 +44,11 @@ protected:
 	static const int SwapChainBufferCount = 2;
 	int mCurrBackBuffer = 0;
 
-	Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory;
+	//Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory; 
+	//Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
+	std::unique_ptr<Device> mDevice;
+
 	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;
-	Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 
 	Microsoft::WRL::ComPtr<ID3D12Fence> mFence;
 	UINT64 mCurrentFence = 0;
@@ -53,7 +59,6 @@ protected:
 		
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mRtvHeap;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mDsvHeap;
-	
 	Microsoft::WRL::ComPtr<ID3D12Resource> mSwapChainBuffer[SwapChainBufferCount];
 	Microsoft::WRL::ComPtr<ID3D12Resource> mDepthStencilBuffer;
 	 	

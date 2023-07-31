@@ -147,6 +147,7 @@
     <ClCompile Include="..\..\Common\MathHelper.cpp" />
     <ClCompile Include="BaseDX.cpp" />
     <ClCompile Include="ClearColor.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="DXHelper.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="SimplerBox.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="BaseDX.h" />
     <ClInclude Include="ClearColor.h" />
     <ClInclude Include="d3dx12.h" />
+    <ClInclude Include="Device.h" />
     <ClInclude Include="DXHelper.h" />
     <ClInclude Include="SimplerBox.h" />
     <ClInclude Include="WindowsWapper.h" />

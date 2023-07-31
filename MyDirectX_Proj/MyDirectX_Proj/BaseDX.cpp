@@ -13,21 +13,23 @@ BaseDX::BaseDX(uint32_t width, uint32_t height, std::wstring name):
     m_width(width),
     m_height(height),
     m_title(name)
-{    
+{        
 }
 
 void BaseDX::OnDestroy()
 {
-    if (md3dDevice != nullptr)      
+    if (mDevice->DxDevice() != nullptr)      
         FlushCommandQueue();
 }
 
 void BaseDX::OnInit()
 {
-    CreateDXGIFactory1(IID_PPV_ARGS(&mdxgiFactory));
-    HRESULT hardwareResult = D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&md3dDevice));
-               
+    /*CreateDXGIFactory1(IID_PPV_ARGS(&mdxgiFactory));
+    HRESULT hardwareResult = D3D12CreateDevice(nullptr, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&md3dDevice));*/
+    mDevice = std::make_unique<Device>();
 
+    auto md3dDevice = mDevice->DxDevice();
+    auto mdxgiFactory = mDevice->DxgiFactory();
     //1
     md3dDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
 
@@ -97,6 +99,7 @@ void BaseDX::OnResize()
 {
     FlushCommandQueue();
 
+    auto md3dDevice = mDevice->DxDevice();
     mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
 
     for (int i = 0; i < SwapChainBufferCount; ++i)
