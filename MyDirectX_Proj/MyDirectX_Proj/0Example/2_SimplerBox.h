@@ -1,7 +1,8 @@
 #pragma once
 
 #include "../Base/BaseDX.h"
-
+#include"../Utility/MathHelper.h"
+#include"../Resource/UploadBuffer.h"
 
 using namespace DirectX;
 
@@ -13,7 +14,7 @@ struct Vertex
 
 struct ObjectConstants
 {
-	// XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
+	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
     XMFLOAT2 ColorW = DirectX::XMFLOAT2(1,1);
 };
 
@@ -23,7 +24,7 @@ public:
 	SimplerBox(uint32_t width, uint32_t height, std::wstring name);
 
 private:
-    /*std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
+    std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
 
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
@@ -38,7 +39,7 @@ private:
 
     XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
     XMFLOAT4X4 mView = MathHelper::Identity4x4();
-    XMFLOAT4X4 mProj = MathHelper::Identity4x4();*/
+    XMFLOAT4X4 mProj = MathHelper::Identity4x4();
 
     float mTheta = 1.5f * XM_PI;
     float mPhi = XM_PIDIV4;
