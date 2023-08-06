@@ -6,8 +6,8 @@
 
 
 #include <windows.h>
-#include "ClearColor.h"
-#include "SimplerBox.h"
+#include "0Example/1_ClearColor.h"
+#include "0Example/2_SimplerBox.h"
 
 
 // д╛хофад╩

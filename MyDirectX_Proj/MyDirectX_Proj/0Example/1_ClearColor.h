@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BaseDX.h"
+#include "../Base/BaseDX.h"
 
 using namespace DirectX;
 

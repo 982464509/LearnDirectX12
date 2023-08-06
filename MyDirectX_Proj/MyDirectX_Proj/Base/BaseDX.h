@@ -6,10 +6,10 @@
 #include <DirectXMath.h>
 #include "d3dx12.h"
 #include "WindowsWapper.h"
-#include "DXHelper.h"
+#include "../Utility/DXHelper.h"
 #include <dxgi1_4.h>
 
-#include "RunTime/Device.h"
+#include "../RunTime/Device.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")

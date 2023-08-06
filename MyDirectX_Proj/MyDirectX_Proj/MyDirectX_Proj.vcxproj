@@ -143,20 +143,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BaseDX.cpp" />
-    <ClCompile Include="ClearColor.cpp" />
-    <ClCompile Include="DXHelper.cpp" />
+    <ClCompile Include="0Example\1_ClearColor.cpp" />
+    <ClCompile Include="0Example\2_SimplerBox.cpp" />
+    <ClCompile Include="Base\BaseDX.cpp" />
+    <ClCompile Include="Base\WindowsWapper.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="RunTime\Device.cpp" />
-    <ClCompile Include="WindowsWapper.cpp" />
+    <ClCompile Include="Utility\DXHelper.cpp" />
+    <ClCompile Include="Utility\MathHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BaseDX.h" />
-    <ClInclude Include="ClearColor.h" />
-    <ClInclude Include="d3dx12.h" />
-    <ClInclude Include="DXHelper.h" />
+    <ClInclude Include="0Example\1_ClearColor.h" />
+    <ClInclude Include="0Example\2_SimplerBox.h" />
+    <ClInclude Include="Base\BaseDX.h" />
+    <ClInclude Include="Base\d3dx12.h" />
+    <ClInclude Include="Base\WindowsWapper.h" />
     <ClInclude Include="RunTime\Device.h" />
-    <ClInclude Include="WindowsWapper.h" />
+    <ClInclude Include="Utility\DXHelper.h" />
+    <ClInclude Include="Utility\MathHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

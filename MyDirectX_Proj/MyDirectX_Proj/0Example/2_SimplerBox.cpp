@@ -4,7 +4,7 @@
 // @description :
 //***************************************************************************************
 
-#include "SimplerBox.h"
+#include "../0Example/2_SimplerBox.h"
 
 //SimplerBox::SimplerBox(uint32_t width, uint32_t height, std::wstring name) :
 //    BaseDX(width, height, name),

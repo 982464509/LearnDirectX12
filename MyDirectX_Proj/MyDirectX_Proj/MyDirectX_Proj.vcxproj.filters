@@ -39,45 +39,69 @@
     <Filter Include="源文件\RunTime">
       <UniqueIdentifier>{f6e7eb6b-e04c-4e8e-b228-e3115ff1680c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Example">
+      <UniqueIdentifier>{87f6d488-676b-4e2e-ae06-c9aea172fb0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Example">
+      <UniqueIdentifier>{95229da9-50cc-4c6d-bb58-338d34cd36fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Base">
+      <UniqueIdentifier>{5947ae1d-565a-476c-9e71-3ef994426a25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Base">
+      <UniqueIdentifier>{498d7917-f837-4ffd-91bd-c4da0c600a05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DXHelper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsWapper.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="BaseDX.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="ClearColor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="RunTime\Device.cpp">
       <Filter>源文件\RunTime</Filter>
     </ClCompile>
+    <ClCompile Include="0Example\1_ClearColor.cpp">
+      <Filter>源文件\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\BaseDX.cpp">
+      <Filter>源文件\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Base\WindowsWapper.cpp">
+      <Filter>源文件\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\DXHelper.cpp">
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\MathHelper.cpp">
+      <Filter>源文件\Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="0Example\2_SimplerBox.cpp">
+      <Filter>源文件\Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="d3dx12.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BaseDX.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="DXHelper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsWapper.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ClearColor.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="RunTime\Device.h">
       <Filter>头文件\RunTime</Filter>
+    </ClInclude>
+    <ClInclude Include="0Example\1_ClearColor.h">
+      <Filter>头文件\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\BaseDX.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\d3dx12.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Base\WindowsWapper.h">
+      <Filter>头文件\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\DXHelper.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\MathHelper.h">
+      <Filter>头文件\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="0Example\2_SimplerBox.h">
+      <Filter>头文件\Example</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
