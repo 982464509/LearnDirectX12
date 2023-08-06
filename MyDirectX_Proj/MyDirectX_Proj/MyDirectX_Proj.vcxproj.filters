@@ -56,40 +56,7 @@
     <ClCompile Include="ClearColor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="SimplerBox.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\Buffer.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="RunTime\Device.cpp">
-      <Filter>源文件\RunTime</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\BufferView.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\DefaultBuffer.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\UploadBuffer.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\ReadbackBuffer.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\DescriptorHeap.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\DescriptorHeapView.h">
-      <Filter>头文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\Mesh.cpp">
-      <Filter>源文件\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="RunTime\CommandListHandle.cpp">
-      <Filter>源文件\RunTime</Filter>
-    </ClCompile>
-    <ClCompile Include="RunTime\FrameResource.cpp">
       <Filter>源文件\RunTime</Filter>
     </ClCompile>
   </ItemGroup>
@@ -109,43 +76,7 @@
     <ClInclude Include="ClearColor.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SimplerBox.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Buffer.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="RunTime\Device.h">
-      <Filter>头文件\RunTime</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\BufferView.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\DefaultBuffer.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\UploadBuffer.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\ReadbackBuffer.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\DescriptorHeap.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Texture.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Mesh.h">
-      <Filter>头文件\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="RunTime\CommandListHandle.h">
-      <Filter>头文件\RunTime</Filter>
-    </ClInclude>
-    <ClInclude Include="RunTime\FrameResource.h">
       <Filter>头文件\RunTime</Filter>
     </ClInclude>
   </ItemGroup>
