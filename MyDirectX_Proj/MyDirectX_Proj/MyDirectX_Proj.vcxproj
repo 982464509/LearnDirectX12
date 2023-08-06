@@ -143,25 +143,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Common\d3dUtil.cpp" />
-    <ClCompile Include="..\..\Common\MathHelper.cpp" />
     <ClCompile Include="BaseDX.cpp" />
     <ClCompile Include="ClearColor.cpp" />
-    <ClCompile Include="Device.cpp" />
     <ClCompile Include="DXHelper.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Resource\Buffer.cpp" />
+    <ClCompile Include="Resource\BufferView.cpp" />
+    <ClCompile Include="Resource\DefaultBuffer.cpp" />
+    <ClCompile Include="Resource\DescriptorHeap.cpp" />
+    <ClCompile Include="Resource\DescriptorHeapView.h" />
+    <ClCompile Include="Resource\Mesh.cpp" />
+    <ClCompile Include="Resource\ReadbackBuffer.cpp" />
+    <ClCompile Include="Resource\UploadBuffer.cpp" />
+    <ClCompile Include="RunTime\CommandListHandle.cpp" />
+    <ClCompile Include="RunTime\Device.cpp" />
+    <ClCompile Include="RunTime\FrameResource.cpp" />
     <ClCompile Include="SimplerBox.cpp" />
     <ClCompile Include="WindowsWapper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Common\d3dUtil.h" />
-    <ClInclude Include="..\..\Common\MathHelper.h" />
-    <ClInclude Include="..\..\Common\UploadBuffer.h" />
     <ClInclude Include="BaseDX.h" />
     <ClInclude Include="ClearColor.h" />
     <ClInclude Include="d3dx12.h" />
-    <ClInclude Include="Device.h" />
     <ClInclude Include="DXHelper.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Resource\Buffer.h" />
+    <ClInclude Include="Resource\BufferView.h" />
+    <ClInclude Include="Resource\DefaultBuffer.h" />
+    <ClInclude Include="Resource\DescriptorHeap.h" />
+    <ClInclude Include="Resource\Mesh.h" />
+    <ClInclude Include="Resource\ReadbackBuffer.h" />
+    <ClInclude Include="Resource\Texture.h" />
+    <ClInclude Include="Resource\UploadBuffer.h" />
+    <ClInclude Include="RunTime\CommandListHandle.h" />
+    <ClInclude Include="RunTime\Device.h" />
+    <ClInclude Include="RunTime\FrameResource.h" />
     <ClInclude Include="SimplerBox.h" />
     <ClInclude Include="WindowsWapper.h" />
   </ItemGroup>

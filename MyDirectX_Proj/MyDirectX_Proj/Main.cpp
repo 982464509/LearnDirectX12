@@ -16,9 +16,9 @@ static int gClientHeight = 720;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 {
-	//auto clearColor = ClearColor(gClientWidth, gClientHeight, L"D3D Color");
-	//return WinApplication::Run(&clearColor, hInstance, nCmdShow);
+	auto clearColor = ClearColor(gClientWidth, gClientHeight, L"D3D Color");
+	return WinApplication::Run(&clearColor, hInstance, nCmdShow);
 
-	auto simplerBox = SimplerBox(gClientWidth, gClientHeight, L"D3D Box");
-	return WinApplication::Run(&simplerBox, hInstance, nCmdShow);
+	/*auto simplerBox = SimplerBox(gClientWidth, gClientHeight, L"D3D Box");
+	return WinApplication::Run(&simplerBox, hInstance, nCmdShow);*/
 }

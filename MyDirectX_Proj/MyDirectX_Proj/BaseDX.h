@@ -9,7 +9,7 @@
 #include "DXHelper.h"
 #include <dxgi1_4.h>
 
-#include "Device.h"
+#include "RunTime/Device.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 #pragma comment(lib, "D3D12.lib")
@@ -44,8 +44,6 @@ protected:
 	static const int SwapChainBufferCount = 2;
 	int mCurrBackBuffer = 0;
 
-	//Microsoft::WRL::ComPtr<IDXGIFactory4> mdxgiFactory; 
-	//Microsoft::WRL::ComPtr<ID3D12Device> md3dDevice;
 	std::unique_ptr<Device> mDevice;
 
 	Microsoft::WRL::ComPtr<IDXGISwapChain> mSwapChain;

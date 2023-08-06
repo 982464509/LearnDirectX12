@@ -9,9 +9,35 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="头文件\Resource">
+      <UniqueIdentifier>{9c873f44-e164-4dc4-9499-c97ed872788a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Resource">
+      <UniqueIdentifier>{ce13e4b9-c0ab-4703-826c-77688a2f7cea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Component">
+      <UniqueIdentifier>{a2bc8987-48fd-475f-b1fe-d14c6c41602e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\RunTime">
+      <UniqueIdentifier>{5eeb30ae-3e55-4bbf-b919-a5aee6894b32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\ShaderMgr">
+      <UniqueIdentifier>{79953ebd-8d52-49f3-9b94-f2150c2d9d73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Utility">
+      <UniqueIdentifier>{09a0e9d7-c43b-46e1-ac94-e40f7c597250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Component">
+      <UniqueIdentifier>{83e5ef2d-5f75-4dbc-adfe-b7d729e7f6e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Utility">
+      <UniqueIdentifier>{63968403-4b01-4905-bfbe-c2f6dfbaf4cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ShaderMgr">
+      <UniqueIdentifier>{44f49eb7-7eff-44ec-abb3-fddeb3f67833}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\RunTime">
+      <UniqueIdentifier>{f6e7eb6b-e04c-4e8e-b228-e3115ff1680c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -33,14 +59,38 @@
     <ClCompile Include="SimplerBox.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\MathHelper.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Resource\Buffer.cpp">
+      <Filter>源文件\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Common\d3dUtil.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="RunTime\Device.cpp">
+      <Filter>源文件\RunTime</Filter>
     </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Resource\BufferView.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\DefaultBuffer.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\UploadBuffer.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\ReadbackBuffer.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\DescriptorHeap.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\DescriptorHeapView.h">
+      <Filter>头文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Mesh.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="RunTime\CommandListHandle.cpp">
+      <Filter>源文件\RunTime</Filter>
+    </ClCompile>
+    <ClCompile Include="RunTime\FrameResource.cpp">
+      <Filter>源文件\RunTime</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,17 +112,41 @@
     <ClInclude Include="SimplerBox.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\MathHelper.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\UploadBuffer.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Resource\Buffer.h">
+      <Filter>头文件\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Common\d3dUtil.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="RunTime\Device.h">
+      <Filter>头文件\RunTime</Filter>
     </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Resource\BufferView.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\DefaultBuffer.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\UploadBuffer.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\ReadbackBuffer.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\DescriptorHeap.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Mesh.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="RunTime\CommandListHandle.h">
+      <Filter>头文件\RunTime</Filter>
+    </ClInclude>
+    <ClInclude Include="RunTime\FrameResource.h">
+      <Filter>头文件\RunTime</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
