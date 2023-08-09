@@ -59,7 +59,7 @@
     <ClCompile Include="RunTime\Device.cpp">
       <Filter>源文件\RunTime</Filter>
     </ClCompile>
-    <ClCompile Include="0Example\1_ClearColor.cpp">
+    <ClCompile Include="0Example\01_ClearColor.cpp">
       <Filter>源文件\Example</Filter>
     </ClCompile>
     <ClCompile Include="Base\BaseDX.cpp">
@@ -74,10 +74,10 @@
     <ClCompile Include="Utility\MathHelper.cpp">
       <Filter>源文件\Utility</Filter>
     </ClCompile>
-    <ClCompile Include="0Example\2_SimplerBox.cpp">
+    <ClCompile Include="0Example\02_SimplerBox.cpp">
       <Filter>源文件\Example</Filter>
     </ClCompile>
-    <ClCompile Include="0Example\3_Shapes.cpp">
+    <ClCompile Include="0Example\03_Shapes.cpp">
       <Filter>源文件\Example</Filter>
     </ClCompile>
     <ClCompile Include="Utility\GeometryGenerator.cpp">
@@ -86,12 +86,15 @@
     <ClCompile Include="Resource\FrameResource.cpp">
       <Filter>源文件\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="0Example\04_DynamicBox.cpp">
+      <Filter>源文件\Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RunTime\Device.h">
       <Filter>头文件\RunTime</Filter>
     </ClInclude>
-    <ClInclude Include="0Example\1_ClearColor.h">
+    <ClInclude Include="0Example\01_ClearColor.h">
       <Filter>头文件\Example</Filter>
     </ClInclude>
     <ClInclude Include="Base\BaseDX.h">
@@ -109,13 +112,13 @@
     <ClInclude Include="Utility\MathHelper.h">
       <Filter>头文件\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="0Example\2_SimplerBox.h">
+    <ClInclude Include="0Example\02_SimplerBox.h">
       <Filter>头文件\Example</Filter>
     </ClInclude>
     <ClInclude Include="Resource\UploadBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0Example\3_Shapes.h">
+    <ClInclude Include="0Example\03_Shapes.h">
       <Filter>头文件\Example</Filter>
     </ClInclude>
     <ClInclude Include="Utility\GeometryGenerator.h">
@@ -123,6 +126,9 @@
     </ClInclude>
     <ClInclude Include="Resource\FrameResource.h">
       <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="0Example\04_DynamicBox.h">
+      <Filter>头文件\Example</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

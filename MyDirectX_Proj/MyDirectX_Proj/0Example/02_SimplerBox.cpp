@@ -4,7 +4,7 @@
 // @description :
 //***************************************************************************************
 
-#include "../0Example/2_SimplerBox.h"
+#include "../0Example/02_SimplerBox.h"
 
 
 SimplerBox::SimplerBox(uint32_t width, uint32_t height, std::wstring name) :
@@ -61,6 +61,7 @@ void SimplerBox::OnLoadAssets()
     
 
     auto path = L"E:\\01_DirectX\\DirectX12_Proj\\MyDirectX_Proj\\MyDirectX_Proj\\Shaders\\2_color.hlsl";
+       
     mvsByteCode = DXHelper::CompileShader(path, nullptr, "VS", "vs_5_0");
     mpsByteCode = DXHelper::CompileShader(path, nullptr, "PS", "ps_5_0");
     mInputLayout =

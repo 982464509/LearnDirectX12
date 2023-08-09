@@ -143,9 +143,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="0Example\1_ClearColor.cpp" />
-    <ClCompile Include="0Example\2_SimplerBox.cpp" />
-    <ClCompile Include="0Example\3_Shapes.cpp" />
+    <ClCompile Include="0Example\04_DynamicBox.cpp" />
+    <ClCompile Include="0Example\01_ClearColor.cpp" />
+    <ClCompile Include="0Example\02_SimplerBox.cpp" />
+    <ClCompile Include="0Example\03_Shapes.cpp" />
     <ClCompile Include="Base\BaseDX.cpp" />
     <ClCompile Include="Base\WindowsWapper.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -156,9 +157,10 @@
     <ClCompile Include="Utility\MathHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="0Example\1_ClearColor.h" />
-    <ClInclude Include="0Example\2_SimplerBox.h" />
-    <ClInclude Include="0Example\3_Shapes.h" />
+    <ClInclude Include="0Example\04_DynamicBox.h" />
+    <ClInclude Include="0Example\01_ClearColor.h" />
+    <ClInclude Include="0Example\02_SimplerBox.h" />
+    <ClInclude Include="0Example\03_Shapes.h" />
     <ClInclude Include="Base\BaseDX.h" />
     <ClInclude Include="Base\d3dx12.h" />
     <ClInclude Include="Base\WindowsWapper.h" />

@@ -4,7 +4,7 @@
 // @description :
 //***************************************************************************************
 
-#include "3_Shapes.h"
+#include "03_Shapes.h"
 
 
 Shapes::Shapes(uint32_t width, uint32_t height, std::wstring name) :
@@ -453,23 +453,13 @@ void Shapes::OnRender()
             mCommandList->IASetVertexBuffers(0, 1, &vbv);
             mCommandList->IASetIndexBuffer(&ibv);
             mCommandList->IASetPrimitiveTopology(ri->PrimitiveType);
-
-            // 为了绘制当前的帧资源和当前物体，偏移到描述符堆中对应的CBV处
-           /* UINT cbvIndex = mCurrFrameResourceIndex*(UINT)mOpaqueRitems.size() + ri->ObjCBIndex;
-            auto cbvHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-            cbvHandle.Offset(cbvIndex, mCbvSrvUavDescriptorSize);
-
-            cmdList->SetGraphicsRootDescriptorTable(0, cbvHandle);
-            cmdList->DrawIndexedInstanced(ri->IndexCount, 1, ri->StartIndexLocation, ri->BaseVertexLocation, 0);*/
-
+          
             D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress();
             objCBAddress += ri->ObjCBIndex * objCBByteSize;
 
-            //设置根描述符,将根描述符与资源绑定
-            mCommandList->SetGraphicsRootConstantBufferView(
-                0,			//寄存器槽号
-                objCBAddress);	//子资源地址
-
+            //设置根描述符,将根描述符与资源绑定//寄存器槽号//子资源地址
+            mCommandList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+               	               	
             //绘制顶点（通过索引缓冲区绘制）
             mCommandList->DrawIndexedInstanced(
                 ri->IndexCount,		//每个实例要绘制的索引数

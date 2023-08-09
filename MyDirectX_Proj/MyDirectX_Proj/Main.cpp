@@ -6,17 +6,18 @@
 
 
 #include <windows.h>
-#include "0Example/1_ClearColor.h"
-#include "0Example/2_SimplerBox.h"
-#include "0Example/3_Shapes.h"
+#include "0Example/01_ClearColor.h"
+#include "0Example/02_SimplerBox.h"
+#include "0Example/03_Shapes.h"
+#include "0Example/04_DynamicBox.h"
 
 
 // Ä¬ÈÏÆÁÄ»
-static int gClientWidth = 1280;
-static int gClientHeight = 720;
+static const int gClientWidth = 1280;
+static const int gClientHeight = 720;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
-{
+{	
 	//1. Iint Color
 	// auto clearColor = ClearColor(gClientWidth, gClientHeight, L"D3D Color");
 	// return WinApplication::Run(&clearColor, hInstance, nCmdShow);
@@ -26,6 +27,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 	 return WinApplication::Run(&simplerbox, hInstance, nCmdShow);*/
 
 	// 3. Shapes
-	auto shapes = Shapes(gClientWidth, gClientHeight, L"D3D Shapes");
-	return WinApplication::Run(&shapes, hInstance, nCmdShow);
+	/*auto shapes = Shapes(gClientWidth, gClientHeight, L"D3D Shapes");
+	return WinApplication::Run(&shapes, hInstance, nCmdShow);*/
+
+	// 4. 
+	auto dynamicBox = DynamicBox(gClientWidth, gClientHeight, L"D3D DynamicBox");
+	return WinApplication::Run(&dynamicBox, hInstance, nCmdShow);
 }
