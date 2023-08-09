@@ -11,8 +11,7 @@
 // 将常量缓冲区资源（cbuffer）绑定到常量缓冲区寄存器槽0
 cbuffer cbPerObject : register(b0)
 {
-	float4x4 gWorldViewProj; 
-    float2 gColorW;
+	float4x4 gWorldViewProj;   
 };
 
 struct VertexIn
@@ -32,8 +31,7 @@ VertexOut VS(VertexIn vin)
 	VertexOut vout;	
 	// Transform to homogeneous clip space.
 	vout.PosH = mul(float4(vin.PosL, 1.0f), gWorldViewProj);	
-	// Just pass vertex color into the pixel shader.
-    vin.Color.r = vin.Color.r * gColorW.x;
+	// Just pass vertex color into the pixel shader.  
     vout.Color = vin.Color;
     
     return vout;

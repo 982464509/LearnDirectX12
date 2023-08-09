@@ -145,22 +145,28 @@
   <ItemGroup>
     <ClCompile Include="0Example\1_ClearColor.cpp" />
     <ClCompile Include="0Example\2_SimplerBox.cpp" />
+    <ClCompile Include="0Example\3_Shapes.cpp" />
     <ClCompile Include="Base\BaseDX.cpp" />
     <ClCompile Include="Base\WindowsWapper.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Resource\FrameResource.cpp" />
     <ClCompile Include="RunTime\Device.cpp" />
     <ClCompile Include="Utility\DXHelper.cpp" />
+    <ClCompile Include="Utility\GeometryGenerator.cpp" />
     <ClCompile Include="Utility\MathHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="0Example\1_ClearColor.h" />
     <ClInclude Include="0Example\2_SimplerBox.h" />
+    <ClInclude Include="0Example\3_Shapes.h" />
     <ClInclude Include="Base\BaseDX.h" />
     <ClInclude Include="Base\d3dx12.h" />
     <ClInclude Include="Base\WindowsWapper.h" />
+    <ClInclude Include="Resource\FrameResource.h" />
     <ClInclude Include="Resource\UploadBuffer.h" />
     <ClInclude Include="RunTime\Device.h" />
     <ClInclude Include="Utility\DXHelper.h" />
+    <ClInclude Include="Utility\GeometryGenerator.h" />
     <ClInclude Include="Utility\MathHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

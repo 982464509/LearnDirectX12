@@ -22,7 +22,6 @@
 #include "../Base/d3dx12.h"
 
 
-
 class DXHelper
 {
 public:

@@ -3,20 +3,8 @@
 #include "../Base/BaseDX.h"
 #include"../Utility/MathHelper.h"
 #include"../Resource/UploadBuffer.h"
-
-using namespace DirectX;
-
-struct Vertex
-{
-	XMFLOAT3 Pos;
-	XMFLOAT4 Color;
-};
-
-struct ObjectConstants
-{
-	XMFLOAT4X4 WorldViewProj = MathHelper::Identity4x4();
-    XMFLOAT2 ColorW = DirectX::XMFLOAT2(1,1);
-};
+#include"../Resource/FrameResource.h"
+#include"../Utility/GeometryGenerator.h"
 
 class SimplerBox :public BaseDX
 {

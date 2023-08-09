@@ -60,8 +60,9 @@ void SimplerBox::OnLoadAssets()
     md3dDevice->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(&mRootSignature));
     
 
-    mvsByteCode = DXHelper::CompileShader(L"Shaders\\color.hlsl", nullptr, "VS", "vs_5_0");
-    mpsByteCode = DXHelper::CompileShader(L"Shaders\\color.hlsl", nullptr, "PS", "ps_5_0");
+    auto path = L"E:\\01_DirectX\\DirectX12_Proj\\MyDirectX_Proj\\MyDirectX_Proj\\Shaders\\2_color.hlsl";
+    mvsByteCode = DXHelper::CompileShader(path, nullptr, "VS", "vs_5_0");
+    mpsByteCode = DXHelper::CompileShader(path, nullptr, "PS", "ps_5_0");
     mInputLayout =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -162,7 +163,7 @@ void SimplerBox::BuildBoxGeometry()
     submesh.StartIndexLocation = 0;
     submesh.BaseVertexLocation = 0;
 
-    mBoxGeo->DrawArgs["box"] = submesh;
+    mBoxGeo->DrawArgs["box"] = submesh;    
 }
 
 void SimplerBox::OnResize()
@@ -194,8 +195,7 @@ void SimplerBox::OnUpdate()
 
     // 用最新的worldViewProj 矩阵来更新常量缓冲区
     ObjectConstants objConstants;
-    XMStoreFloat4x4(&objConstants.WorldViewProj, XMMatrixTranspose(worldViewProj));
-    objConstants.ColorW.x = 0.1;
+    XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(worldViewProj));
 
     mObjectCB->CopyData(0, objConstants);
 }

@@ -17,6 +17,9 @@ private:
     bool mIsConstantBuffer = false;
 
 public:
+    UploadBuffer(const UploadBuffer& rhs) = delete;
+    UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
+
     UploadBuffer(ID3D12Device* device, UINT elementCount, bool isConstantBuffer) :
         mIsConstantBuffer(isConstantBuffer)
     {       
@@ -35,9 +38,7 @@ public:
         mUploadBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mMappedData));       
     }
 
-    UploadBuffer(const UploadBuffer& rhs) = delete;
-    UploadBuffer& operator=(const UploadBuffer& rhs) = delete;
-
+   
     ~UploadBuffer()
     {
         if (mUploadBuffer != nullptr)
@@ -50,6 +51,11 @@ public:
     ID3D12Resource* Resource()const
     {
         return mUploadBuffer.Get();
+    }
+
+    UINT* GetElementByteSize()const
+    {
+        return mElementByteSize;
     }
 
     void CopyData(int elementIndex, const T& data)
