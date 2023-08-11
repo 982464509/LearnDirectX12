@@ -45,17 +45,7 @@ void DynamicBox::OnLoadAssets()
         serializedRootSig->GetBufferPointer(),
         serializedRootSig->GetBufferSize(),
         IID_PPV_ARGS(&mRootSignature));
-    
-    //创建常量描述符堆
-    {
-       /* D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
-        cbvHeapDesc.NumDescriptors = 1;
-        cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-        cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-        cbvHeapDesc.NodeMask = 0;
-        ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));*/
-    }
-   
+       
     auto path = L"E:\\01_DirectX\\DirectX12_Proj\\MyDirectX_Proj\\MyDirectX_Proj\\Shaders\\3_color.hlsl";
     mShaders["standardVS"] = DXHelper::CompileShader(path, nullptr, "VS", "vs_5_0");
     mShaders["opaquePS"] = DXHelper::CompileShader(path, nullptr, "PS", "ps_5_0");
@@ -342,18 +332,7 @@ void DynamicBox::OnRender()
 
 
 
-    {
-        /*auto vv = mBoxGeo->VertexBufferView();
-        auto iv = mBoxGeo->IndexBufferView();
-        ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
-        mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
-        mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
-        mCommandList->IASetVertexBuffers(0, 1, &vv);
-        mCommandList->IASetIndexBuffer(&iv);
-        mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-        mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["box"].IndexCount, 1, 0, 0, 0);*/
-
+    {       
         mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
         auto passCB = mCurrFrameResource->PassCB->Resource();
         mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());

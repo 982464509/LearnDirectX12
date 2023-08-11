@@ -92,6 +92,12 @@
     <ClCompile Include="0Example\05_Light.cpp">
       <Filter>源文件\Example</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\DDSTextureLoader.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\MaterialFrameResource.cpp">
+      <Filter>源文件\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RunTime\Device.h">
@@ -135,6 +141,12 @@
     </ClInclude>
     <ClInclude Include="0Example\05_Light.h">
       <Filter>头文件\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\DDSTextureLoader.h">
+      <Filter>头文件\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\MaterialFrameResource.h">
+      <Filter>头文件\Resource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
 #include "0Example/02_SimplerBox.h"
 #include "0Example/03_Shapes.h"
 #include "0Example/04_DynamicBox.h"
-
+#include "0Example/05_Light.h"
 
 // Ä¬ÈÏÆÁÄ»
 static const int gClientWidth = 1280;
@@ -31,6 +31,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int nCmdShow)
 	return WinApplication::Run(&shapes, hInstance, nCmdShow);*/
 
 	// 4. 
-	auto dynamicBox = DynamicBox(gClientWidth, gClientHeight, L"D3D DynamicBox");
-	return WinApplication::Run(&dynamicBox, hInstance, nCmdShow);
+	/*auto dynamicBox = DynamicBox(gClientWidth, gClientHeight, L"D3D DynamicBox");
+	return WinApplication::Run(&dynamicBox, hInstance, nCmdShow);*/
+
+	//5
+	auto light = LitColumns(gClientWidth, gClientHeight, L"D3D Light");
+	return WinApplication::Run(&light, hInstance, nCmdShow);
 }

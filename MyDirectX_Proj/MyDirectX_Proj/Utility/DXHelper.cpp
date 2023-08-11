@@ -7,8 +7,11 @@
 #include "DXHelper.h"
 
 
-Microsoft::WRL::ComPtr<ID3DBlob> DXHelper::CompileShader(const std::wstring& filename, const D3D_SHADER_MACRO* defines,
-	const std::string& entrypoint, const std::string& target)
+Microsoft::WRL::ComPtr<ID3DBlob> DXHelper::CompileShader(
+    const std::wstring& filename, 
+    const D3D_SHADER_MACRO* defines,
+	const std::string& entrypoint, 
+    const std::string& target)
 {
 	UINT compileFlags = 0;
 #if defined(DEBUG) || defined(_DEBUG)  
