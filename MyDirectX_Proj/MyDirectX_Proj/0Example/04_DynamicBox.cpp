@@ -16,53 +16,49 @@ DynamicBox::DynamicBox(uint32_t width, uint32_t height, std::wstring name) :
 void DynamicBox::OnInit()
 {
     BaseDX::OnInit();
+    OnResize();    
 
-    OnLoadAssets();
-    OnResize();
+    mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr);
+
+    OnLoadAssets();    
+
+    mCommandList->Close();
+    ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
+    mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
+    FlushCommandQueue();
 }
 
 void DynamicBox::OnLoadAssets()
-{
-    // 重置命令列表为执行初始化命令做好准备工作
-    ThrowIfFailed(mCommandList->Reset(mDirectCmdListAlloc.Get(), nullptr));
-    auto md3dDevice = mDevice->DxDevice();
+{        
+    CD3DX12_ROOT_PARAMETER slotRootParameter[2];
+    slotRootParameter[0].InitAsConstantBufferView(0);
+    slotRootParameter[1].InitAsConstantBufferView(1);
+
+    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(2, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+    Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
+    Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
+    D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedRootSig, &errorBlob);
+
+    mDevice->DxDevice()->CreateRootSignature(0,
+        serializedRootSig->GetBufferPointer(),
+        serializedRootSig->GetBufferSize(),
+        IID_PPV_ARGS(&mRootSignature));
+    
     //创建常量描述符堆
     {
-        D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
+       /* D3D12_DESCRIPTOR_HEAP_DESC cbvHeapDesc;
         cbvHeapDesc.NumDescriptors = 1;
         cbvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         cbvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
         cbvHeapDesc.NodeMask = 0;
-        ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));
+        ThrowIfFailed(md3dDevice->CreateDescriptorHeap(&cbvHeapDesc, IID_PPV_ARGS(&mCbvHeap)));*/
     }
-
-    mObjectCB = std::make_unique<UploadBuffer<ObjectConstants>>(md3dDevice, 1, true);
-    UINT objCBByteSize = DXHelper::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-    D3D12_GPU_VIRTUAL_ADDRESS cbAddress = mObjectCB->Resource()->GetGPUVirtualAddress();
-    int boxCBufIndex = 0;   // 偏移到常量缓冲区中绘制第i个物体所需的常量数据，这里取i = 0    
-    cbAddress += boxCBufIndex * objCBByteSize;
-    D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc;
-    cbvDesc.BufferLocation = cbAddress;
-    cbvDesc.SizeInBytes = objCBByteSize;
-    md3dDevice->CreateConstantBufferView(&cbvDesc, mCbvHeap->GetCPUDescriptorHandleForHeapStart());
-
-    CD3DX12_ROOT_PARAMETER slotRootParameter[1];
-    CD3DX12_DESCRIPTOR_RANGE cbvTable;
-    cbvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);// 将这段描述符区域绑定至此基址着色器寄存器        
-    slotRootParameter[0].InitAsDescriptorTable(1, &cbvTable);
-    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter, 0, nullptr,
-        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-    Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
-    D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, serializedRootSig.GetAddressOf(), errorBlob.GetAddressOf());
-    md3dDevice->CreateRootSignature(0, serializedRootSig->GetBufferPointer(), serializedRootSig->GetBufferSize(), IID_PPV_ARGS(&mRootSignature));
-
-
-    auto path = L"E:\\01_DirectX\\DirectX12_Proj\\MyDirectX_Proj\\MyDirectX_Proj\\Shaders\\2_color.hlsl";
-
-    mvsByteCode = DXHelper::CompileShader(path, nullptr, "VS", "vs_5_0");
-    mpsByteCode = DXHelper::CompileShader(path, nullptr, "PS", "ps_5_0");
+   
+    auto path = L"E:\\01_DirectX\\DirectX12_Proj\\MyDirectX_Proj\\MyDirectX_Proj\\Shaders\\3_color.hlsl";
+    mShaders["standardVS"] = DXHelper::CompileShader(path, nullptr, "VS", "vs_5_0");
+    mShaders["opaquePS"] = DXHelper::CompileShader(path, nullptr, "PS", "ps_5_0");
     mInputLayout =
     {
         { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -71,19 +67,54 @@ void DynamicBox::OnLoadAssets()
 
     BuildBoxGeometry();
 
+    {
+        auto boxRitem1 = std::make_unique<BoxRenderItem>();
+        XMStoreFloat4x4(&boxRitem1->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(2.0, 0.0f, 0.0f));
+        boxRitem1->ObjCBIndex = 0;
+        boxRitem1->Geo = mGeometries["shapeGeo"].get();
+        boxRitem1->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+        auto box1 = boxRitem1->Geo->DrawArgs["box1"];
+        boxRitem1->IndexCount = box1.IndexCount;
+        boxRitem1->StartIndexLocation = box1.StartIndexLocation;
+        boxRitem1->BaseVertexLocation = box1.BaseVertexLocation;
+        mAllRitems.push_back(std::move(boxRitem1));
+
+        auto boxRitem2 = std::make_unique<BoxRenderItem>();
+        XMStoreFloat4x4(&boxRitem2->World, XMMatrixScaling(2.0f, 2.0f, 2.0f) * XMMatrixTranslation(-2.0f, 0.0f, 0.0f));
+        boxRitem2->ObjCBIndex = 1;
+        boxRitem2->Geo = mGeometries["shapeGeo"].get();
+        boxRitem2->PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+        auto box2 = boxRitem2->Geo->DrawArgs["box2"];
+        boxRitem2->IndexCount = box2.IndexCount;
+        boxRitem2->StartIndexLocation = box2.StartIndexLocation;
+        boxRitem2->BaseVertexLocation = box2.BaseVertexLocation;
+        mAllRitems.push_back(std::move(boxRitem2));
+        
+
+        for (auto& e : mAllRitems)
+            mOpaqueRitems.push_back(e.get());
+    }
+
+    {
+        for (int i = 0; i < gNumFrameResources; ++i)
+        {
+            mFrameResources.push_back(std::make_unique<FrameResource>(mDevice->DxDevice(), 1, (UINT)mAllRitems.size()));
+        }
+    }
+
     D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc;
     ZeroMemory(&psoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
     psoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
     psoDesc.pRootSignature = mRootSignature.Get();
     psoDesc.VS =
     {
-        reinterpret_cast<BYTE*>(mvsByteCode->GetBufferPointer()),
-        mvsByteCode->GetBufferSize()
+        reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()),
+        mShaders["standardVS"]->GetBufferSize()
     };
     psoDesc.PS =
     {
-        reinterpret_cast<BYTE*>(mpsByteCode->GetBufferPointer()),
-        mpsByteCode->GetBufferSize()
+        reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()),
+        mShaders["opaquePS"]->GetBufferSize()
     };
     psoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);   //光栅器的光栅化状态。
     psoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
@@ -95,75 +126,86 @@ void DynamicBox::OnLoadAssets()
     psoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
     psoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
     psoDesc.DSVFormat = mDepthStencilFormat;
-    ThrowIfFailed(md3dDevice->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSO)));
+    ThrowIfFailed(mDevice->DxDevice()->CreateGraphicsPipelineState(&psoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
-
-    mCommandList->Close();
-    ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
-    mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-    FlushCommandQueue();
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC opaqueWireframePsoDesc = psoDesc;
+    opaqueWireframePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+    ThrowIfFailed(mDevice->DxDevice()->CreateGraphicsPipelineState(&opaqueWireframePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));    
 }
 
 
 void DynamicBox::BuildBoxGeometry()
 {
-    std::array<Vertex, 8> vertices =
+    GeometryGenerator geoGen;
+    GeometryGenerator::MeshData box1 = geoGen.CreateBox(1.5f, 1.5f, 1.5f, 3);
+    GeometryGenerator::MeshData box2 = geoGen.CreateBox(1.5f, 1.5f, 1.5f, 3);
+
+    UINT box1VertexOffset = 0;
+    UINT box2VertexOffset = (UINT)box1.Vertices.size();
+
+    UINT box1IndexOffset = 0;
+    UINT box2IndexOffset = (UINT)box1.Indices32.size();
+
+    SubmeshGeometry box1Submesh;
+    box1Submesh.IndexCount = (UINT)box1.Indices32.size();
+    box1Submesh.StartIndexLocation = box1IndexOffset;
+    box1Submesh.BaseVertexLocation = box1VertexOffset;
+
+    SubmeshGeometry box2dSubmesh;
+    box2dSubmesh.IndexCount = (UINT)box2.Indices32.size();
+    box2dSubmesh.StartIndexLocation = box2IndexOffset;
+    box2dSubmesh.BaseVertexLocation = box2VertexOffset;
+
+    auto totalVertexCount =
+        box1.Vertices.size() +
+        box2.Vertices.size();
+
+    std::vector<Vertex> vertices(totalVertexCount);
+
+    UINT k = 0;
+    for (size_t i = 0; i < box1.Vertices.size(); ++i, ++k)
     {
-        Vertex({ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::White) }),
-        Vertex({ XMFLOAT3(-1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Black) }),
-        Vertex({ XMFLOAT3(+1.0f, +1.0f, -1.0f), XMFLOAT4(Colors::Red) }),
-        Vertex({ XMFLOAT3(+1.0f, -1.0f, -1.0f), XMFLOAT4(Colors::Green) }),
-        Vertex({ XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Blue) }),
-        Vertex({ XMFLOAT3(-1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Yellow) }),
-        Vertex({ XMFLOAT3(+1.0f, +1.0f, +1.0f), XMFLOAT4(Colors::Cyan) }),
-        Vertex({ XMFLOAT3(+1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Magenta) })
-    };
-    std::array<std::uint16_t, 36> indices =
+        vertices[k].Pos = box1.Vertices[i].Position;
+        vertices[k].Color = XMFLOAT4(DirectX::Colors::DarkGreen);
+    }
+
+    for (size_t i = 0; i < box2.Vertices.size(); ++i, ++k)
     {
-        0, 1, 2,// front face
-        0, 2, 3,
-        4, 6, 5,// back face
-        4, 7, 6,
-        4, 5, 1,// left face
-        4, 1, 0,
-        3, 2, 6,// right face
-        3, 6, 7,
-        1, 5, 6,// top face
-        1, 6, 2,
-        4, 0, 3,// bottom face
-        4, 3, 7
-    };
+        vertices[k].Pos = box2.Vertices[i].Position;
+        vertices[k].Color = XMFLOAT4(DirectX::Colors::RosyBrown);
+    }
+    std::vector<std::uint16_t> indices;
+    indices.insert(indices.end(), std::begin(box1.GetIndices16()), std::end(box1.GetIndices16()));
+    indices.insert(indices.end(), std::begin(box2.GetIndices16()), std::end(box2.GetIndices16()));
 
     const UINT vbByteSize = (UINT)vertices.size() * sizeof(Vertex);
     const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
 
-    mBoxGeo = std::make_unique<MeshGeometry>();
-    mBoxGeo->Name = "boxGeo";
+    auto geo = std::make_unique<MeshGeometry>();
+    geo->Name = "shapeGeo";
 
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &mBoxGeo->VertexBufferCPU));
-    CopyMemory(mBoxGeo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &mBoxGeo->IndexBufferCPU));
-    CopyMemory(mBoxGeo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
+    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
+    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
 
-    auto md3dDevice = mDevice->DxDevice();
+    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
+    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
 
-    mBoxGeo->VertexBufferGPU = DXHelper::CreateDefaultBuffer(md3dDevice,
-        mCommandList.Get(), vertices.data(), vbByteSize, mBoxGeo->VertexBufferUploader);
+    geo->VertexBufferGPU = DXHelper::CreateDefaultBuffer(mDevice->DxDevice(),
+        mCommandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
 
-    mBoxGeo->IndexBufferGPU = DXHelper::CreateDefaultBuffer(md3dDevice,
-        mCommandList.Get(), indices.data(), ibByteSize, mBoxGeo->IndexBufferUploader);
+    geo->IndexBufferGPU = DXHelper::CreateDefaultBuffer(mDevice->DxDevice(),
+        mCommandList.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
 
-    mBoxGeo->VertexByteStride = sizeof(Vertex);
-    mBoxGeo->VertexBufferByteSize = vbByteSize;
-    mBoxGeo->IndexFormat = DXGI_FORMAT_R16_UINT;
-    mBoxGeo->IndexBufferByteSize = ibByteSize;
+    geo->VertexByteStride = sizeof(Vertex);
+    geo->VertexBufferByteSize = vbByteSize;
 
-    SubmeshGeometry submesh;
-    submesh.IndexCount = (UINT)indices.size();
-    submesh.StartIndexLocation = 0;
-    submesh.BaseVertexLocation = 0;
+    geo->IndexFormat = DXGI_FORMAT_R16_UINT;
+    geo->IndexBufferByteSize = ibByteSize;
 
-    mBoxGeo->DrawArgs["box"] = submesh;
+    geo->DrawArgs["box1"] = box1Submesh;
+    geo->DrawArgs["box2"] = box2dSubmesh;
+    
+    mGeometries[geo->Name] = std::move(geo);
 }
 
 void DynamicBox::OnResize()
@@ -177,31 +219,88 @@ void DynamicBox::OnResize()
 
 void DynamicBox::OnUpdate()
 {
-    float dx = XMConvertToRadians(0.05f);   
-    mTheta -= dx;
-    
-    float x = mRadius * sinf(mPhi) * cosf(mTheta);
-    float z = mRadius * sinf(mPhi) * sinf(mTheta);
-    float y = mRadius * cosf(mPhi);
+    if (GetAsyncKeyState('1') & 0x8000)
+        mIsWireframe = true;
+    else
+        mIsWireframe = false;
 
-    // 构建观察矩阵
-    XMVECTOR pos = XMVectorSet(x, y, z, 1.0f);
+    mTheta -= 0.0005;   
+    
+    mEyePos.x = mRadius * sinf(mPhi) * cosf(mTheta);
+    mEyePos.z = mRadius * sinf(mPhi) * sinf(mTheta);
+    mEyePos.y = mRadius * cosf(mPhi);
+
+    // Build the view matrix.
+    XMVECTOR pos = XMVectorSet(mEyePos.x, mEyePos.y, mEyePos.z, 1.0f);
     XMVECTOR target = XMVectorZero();
     XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
     XMStoreFloat4x4(&mView, view);
 
-    XMMATRIX world = XMLoadFloat4x4(&mWorld);
-    XMMATRIX proj = XMLoadFloat4x4(&mProj);
-    XMMATRIX worldViewProj = world * view * proj;
+    mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
+    mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
+    UINT64 _fence = mCurrFrameResource->Fence;
+    if (_fence != 0)
+    {
+        if (_fence > mFence->GetCompletedValue())
+        {
 
-    // 用最新的worldViewProj 矩阵来更新常量缓冲区
-    ObjectConstants objConstants;
-    XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(worldViewProj));
+            HANDLE eventHandle = CreateEventEx(nullptr, nullptr, false, EVENT_ALL_ACCESS);
+            ThrowIfFailed(mFence->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
+            WaitForSingleObject(eventHandle, INFINITE);
+            CloseHandle(eventHandle);
+        }
+    }
 
-    mObjectCB->CopyData(0, objConstants);
+    // UpdateObjectCBs
+    {
+        auto currObjectCB = mCurrFrameResource->ObjectCB.get();
+        for (auto& renderItem : mAllRitems)
+        {
+            if (renderItem->NumFramesDirty > 0)
+            {
+                XMMATRIX world = XMLoadFloat4x4(&renderItem->World);
+                ObjectConstants objConstants;
+                XMStoreFloat4x4(&objConstants.World, XMMatrixTranspose(world));
+                currObjectCB->CopyData(renderItem->ObjCBIndex, objConstants);
+                // 还需要对下一个FrameResource进行更新
+                renderItem->NumFramesDirty--;
+            }
+        }
+    }
+
+    // UpdateMainPassCB
+    {
+        XMMATRIX view = XMLoadFloat4x4(&mView);
+        XMMATRIX proj = XMLoadFloat4x4(&mProj);
+
+        XMMATRIX viewProj = XMMatrixMultiply(view, proj);
+
+        auto vv = XMMatrixDeterminant(view);
+        auto pj = XMMatrixDeterminant(proj);
+        auto vj = XMMatrixDeterminant(viewProj);
+        XMMATRIX invView = XMMatrixInverse(&vv, view);
+        XMMATRIX invProj = XMMatrixInverse(&pj, proj);
+        XMMATRIX invViewProj = XMMatrixInverse(&vj, viewProj);
+
+        PassConstants mMainPassCB;
+        XMStoreFloat4x4(&mMainPassCB.View, XMMatrixTranspose(view));
+        XMStoreFloat4x4(&mMainPassCB.InvView, XMMatrixTranspose(invView));
+        XMStoreFloat4x4(&mMainPassCB.Proj, XMMatrixTranspose(proj));
+        XMStoreFloat4x4(&mMainPassCB.InvProj, XMMatrixTranspose(invProj));
+        XMStoreFloat4x4(&mMainPassCB.ViewProj, XMMatrixTranspose(viewProj));
+        XMStoreFloat4x4(&mMainPassCB.InvViewProj, XMMatrixTranspose(invViewProj));
+        mMainPassCB.EyePosW = mEyePos;
+        mMainPassCB.RenderTargetSize = XMFLOAT2((float)m_width, (float)m_height);
+        mMainPassCB.InvRenderTargetSize = XMFLOAT2(1.0f / m_width, 1.0f / m_height);
+        mMainPassCB.NearZ = 1.0f;
+        mMainPassCB.FarZ = 1000.0f;
+
+        auto currPassCB = mCurrFrameResource->PassCB.get();
+        currPassCB->CopyData(0, mMainPassCB);
+    }
 }
 
 void DynamicBox::OnDestroy()
@@ -211,13 +310,25 @@ void DynamicBox::OnDestroy()
 
 void DynamicBox::OnRender()
 {
-    mDirectCmdListAlloc->Reset();
-    mCommandList->Reset(mDirectCmdListAlloc.Get(), mPSO.Get());
+    auto cmdListAlloc = mCurrFrameResource->CmdListAlloc;
+    cmdListAlloc->Reset();
+
+   if (mIsWireframe)
+    {
+        ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["opaque_wireframe"].Get()));
+    }
+    else
+    {
+        ThrowIfFailed(mCommandList->Reset(cmdListAlloc.Get(), mPSOs["opaque"].Get()));
+    }    
+   
+   mCommandList->RSSetViewports(1, &mScreenViewport);
+   mCommandList->RSSetScissorRects(1, &mScissorRect);
+
     auto p2t = CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
         D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
     mCommandList->ResourceBarrier(1, &p2t);
-    mCommandList->RSSetViewports(1, &mScreenViewport);
-    mCommandList->RSSetScissorRects(1, &mScissorRect);
+
     auto currentBackBufferView = CurrentBackBufferView();
     auto depthStencilView = DepthStencilView();
     mCommandList->ClearRenderTargetView(currentBackBufferView, Colors::Khaki, 0, nullptr);
@@ -232,7 +343,7 @@ void DynamicBox::OnRender()
 
 
     {
-        auto vv = mBoxGeo->VertexBufferView();
+        /*auto vv = mBoxGeo->VertexBufferView();
         auto iv = mBoxGeo->IndexBufferView();
         ID3D12DescriptorHeap* descriptorHeaps[] = { mCbvHeap.Get() };
         mCommandList->SetDescriptorHeaps(_countof(descriptorHeaps), descriptorHeaps);
@@ -241,7 +352,39 @@ void DynamicBox::OnRender()
         mCommandList->IASetIndexBuffer(&iv);
         mCommandList->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         mCommandList->SetGraphicsRootDescriptorTable(0, mCbvHeap->GetGPUDescriptorHandleForHeapStart());
-        mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["box"].IndexCount, 1, 0, 0, 0);
+        mCommandList->DrawIndexedInstanced(mBoxGeo->DrawArgs["box"].IndexCount, 1, 0, 0, 0);*/
+
+        mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
+        auto passCB = mCurrFrameResource->PassCB->Resource();
+        mCommandList->SetGraphicsRootConstantBufferView(1, passCB->GetGPUVirtualAddress());
+
+        {
+            UINT objCBByteSize = DXHelper::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+            auto objectCB = mCurrFrameResource->ObjectCB->Resource();
+            for (size_t i = 0; i < mOpaqueRitems.size(); ++i)
+            {
+                auto ri = mOpaqueRitems[i];
+                auto vbv = ri->Geo->VertexBufferView();
+                auto ibv = ri->Geo->IndexBufferView();
+                mCommandList->IASetVertexBuffers(0, 1, &vbv);
+                mCommandList->IASetIndexBuffer(&ibv);
+                mCommandList->IASetPrimitiveTopology(ri->PrimitiveType);
+
+                D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = objectCB->GetGPUVirtualAddress();
+                objCBAddress += ri->ObjCBIndex * objCBByteSize;
+
+                //设置根描述符,将根描述符与资源绑定//寄存器槽号//子资源地址
+                mCommandList->SetGraphicsRootConstantBufferView(0, objCBAddress);
+
+                //绘制顶点（通过索引缓冲区绘制）
+                mCommandList->DrawIndexedInstanced(
+                    ri->IndexCount,		//每个实例要绘制的索引数
+                    1, //实例化个数
+                    ri->StartIndexLocation, //起始索引位置
+                    ri->BaseVertexLocation, //子物体起始索引在全局索引中的位置
+                    0);		//实例化的高级技术，暂时设置为0
+            }
+        }
     }
 
 

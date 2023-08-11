@@ -147,6 +147,7 @@
     <ClCompile Include="0Example\01_ClearColor.cpp" />
     <ClCompile Include="0Example\02_SimplerBox.cpp" />
     <ClCompile Include="0Example\03_Shapes.cpp" />
+    <ClCompile Include="0Example\05_Light.cpp" />
     <ClCompile Include="Base\BaseDX.cpp" />
     <ClCompile Include="Base\WindowsWapper.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="0Example\01_ClearColor.h" />
     <ClInclude Include="0Example\02_SimplerBox.h" />
     <ClInclude Include="0Example\03_Shapes.h" />
+    <ClInclude Include="0Example\05_Light.h" />
     <ClInclude Include="Base\BaseDX.h" />
     <ClInclude Include="Base\d3dx12.h" />
     <ClInclude Include="Base\WindowsWapper.h" />

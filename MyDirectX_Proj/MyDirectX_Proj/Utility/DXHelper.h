@@ -22,6 +22,8 @@
 #include "../Base/d3dx12.h"
 
 
+const UINT gNumFrameResources = 3;
+
 class DXHelper
 {
 public:

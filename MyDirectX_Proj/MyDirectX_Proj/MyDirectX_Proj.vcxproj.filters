@@ -89,6 +89,9 @@
     <ClCompile Include="0Example\04_DynamicBox.cpp">
       <Filter>源文件\Example</Filter>
     </ClCompile>
+    <ClCompile Include="0Example\05_Light.cpp">
+      <Filter>源文件\Example</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RunTime\Device.h">
@@ -128,6 +131,9 @@
       <Filter>头文件\Resource</Filter>
     </ClInclude>
     <ClInclude Include="0Example\04_DynamicBox.h">
+      <Filter>头文件\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="0Example\05_Light.h">
       <Filter>头文件\Example</Filter>
     </ClInclude>
   </ItemGroup>

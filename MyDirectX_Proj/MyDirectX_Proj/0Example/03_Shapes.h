@@ -8,7 +8,6 @@
 
 using namespace DirectX;
 
-const UINT gNumFrameResources = 3;
 
 struct RenderItem
 {

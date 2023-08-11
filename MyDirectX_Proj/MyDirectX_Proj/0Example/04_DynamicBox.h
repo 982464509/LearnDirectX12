@@ -7,32 +7,55 @@
 #include"../Utility/GeometryGenerator.h"
 
 
+struct BoxRenderItem
+{
+    BoxRenderItem() = default;
+
+    XMFLOAT4X4 World = MathHelper::Identity4x4();
+    UINT NumFramesDirty = gNumFrameResources;
+
+    UINT ObjCBIndex = -1;
+
+    MeshGeometry* Geo = nullptr;
+
+    D3D12_PRIMITIVE_TOPOLOGY PrimitiveType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+    UINT IndexCount = 0;
+    UINT StartIndexLocation = 0;
+    int BaseVertexLocation = 0;
+};
+
 class DynamicBox :public BaseDX
 {
 public:
     DynamicBox(uint32_t width, uint32_t height, std::wstring name);
 
 private:
-    std::unique_ptr<UploadBuffer<ObjectConstants>> mObjectCB = nullptr;
+    std::vector<std::unique_ptr<FrameResource>> mFrameResources;
+    FrameResource* mCurrFrameResource = nullptr;
+    int mCurrFrameResourceIndex = 0;
+
+    std::unordered_map<std::string, std::unique_ptr<MeshGeometry>> mGeometries;
+    std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3DBlob>> mShaders;
+    std::unordered_map<std::string, Microsoft::WRL::ComPtr<ID3D12PipelineState>> mPSOs;
+
+    std::vector<std::unique_ptr<BoxRenderItem>> mAllRitems;//  存有所有渲染项
+    std::vector<BoxRenderItem*> mOpaqueRitems; //根据PSO来划分渲染项
+    
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mCbvHeap = nullptr;
-
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mRootSignature = nullptr;
-
-    std::unique_ptr<MeshGeometry> mBoxGeo = nullptr;
-
-    Microsoft::WRL::ComPtr<ID3DBlob> mvsByteCode = nullptr;
-    Microsoft::WRL::ComPtr<ID3DBlob> mpsByteCode = nullptr;
+ 
     std::vector<D3D12_INPUT_ELEMENT_DESC> mInputLayout;
 
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> mPSO = nullptr;
+    bool mIsWireframe = false;
 
-    XMFLOAT4X4 mWorld = MathHelper::Identity4x4();
+    XMFLOAT3 mEyePos = { 0.0f, 0.0f, 0.0f };
     XMFLOAT4X4 mView = MathHelper::Identity4x4();
     XMFLOAT4X4 mProj = MathHelper::Identity4x4();
 
     float mTheta = 1.5f * XM_PI;
-    float mPhi = XM_PIDIV4;
-    float mRadius = 5.0f;
+    float mPhi = 0.2f * XM_PI;
+    float mRadius = 15.0f;
 
     POINT mLastMousePos;
 
