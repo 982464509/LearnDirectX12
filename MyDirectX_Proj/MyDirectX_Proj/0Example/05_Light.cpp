@@ -27,7 +27,7 @@ void LitColumns::OnInit()
     ID3D12CommandList* cmdsLists[] = { mCommandList.Get() };
     mCommandQueue->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 
-    FlushCommandQueue();
+    //FlushCommandQueue();
 }
 
 void LitColumns::OnResize()
@@ -46,7 +46,8 @@ void LitColumns::BuildRootSignature()
     slotRootParameter[1].InitAsConstantBufferView(1);
     slotRootParameter[2].InitAsConstantBufferView(2);
 
-    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+    CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter, 0, nullptr, 
+        D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
     Microsoft::WRL::ComPtr<ID3DBlob> serializedRootSig = nullptr;
     Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
@@ -89,41 +90,7 @@ void LitColumns::OnLoadAssets()
             1, (UINT)mAllRitems.size(), (UINT)mMaterials.size()));
     }
 
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
-
-    //
-    // PSO for opaque objects.
-    //
-    ZeroMemory(&opaquePsoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
-    opaquePsoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
-    opaquePsoDesc.pRootSignature = mRootSignature.Get();
-    opaquePsoDesc.VS =
-    {
-        reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()),
-        mShaders["standardVS"]->GetBufferSize()
-    };
-    opaquePsoDesc.PS =
-    {
-        reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()),
-        mShaders["opaquePS"]->GetBufferSize()
-    };
-    opaquePsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-    opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-    opaquePsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-    opaquePsoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-    opaquePsoDesc.SampleMask = UINT_MAX;
-    opaquePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-    opaquePsoDesc.NumRenderTargets = 1;
-    opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;
-    opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
-    opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
-    opaquePsoDesc.DSVFormat = mDepthStencilFormat;
-    ThrowIfFailed(mDevice->DxDevice()->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
-
-    D3D12_GRAPHICS_PIPELINE_STATE_DESC opaque_wireframe;
-    opaque_wireframe = opaquePsoDesc;
-    opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-    ThrowIfFailed(mDevice->DxDevice()->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
+    BuildPSOs();
 }
 
 void LitColumns::BuildRenderItems()
@@ -232,7 +199,37 @@ void LitColumns::BuildRenderItems()
 
 void LitColumns::BuildPSOs()
 {
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC opaquePsoDesc;
+    ZeroMemory(&opaquePsoDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+    opaquePsoDesc.InputLayout = { mInputLayout.data(), (UINT)mInputLayout.size() };
+    opaquePsoDesc.pRootSignature = mRootSignature.Get();
+    opaquePsoDesc.VS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["standardVS"]->GetBufferPointer()),
+        mShaders["standardVS"]->GetBufferSize()
+    };
+    opaquePsoDesc.PS =
+    {
+        reinterpret_cast<BYTE*>(mShaders["opaquePS"]->GetBufferPointer()),
+        mShaders["opaquePS"]->GetBufferSize()
+    };
+    opaquePsoDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+    opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+    opaquePsoDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+    opaquePsoDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+    opaquePsoDesc.SampleMask = UINT_MAX;
+    opaquePsoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+    opaquePsoDesc.NumRenderTargets = 1;
+    opaquePsoDesc.RTVFormats[0] = mBackBufferFormat;
+    opaquePsoDesc.SampleDesc.Count = m4xMsaaState ? 4 : 1;
+    opaquePsoDesc.SampleDesc.Quality = m4xMsaaState ? (m4xMsaaQuality - 1) : 0;
+    opaquePsoDesc.DSVFormat = mDepthStencilFormat;
+    ThrowIfFailed(mDevice->DxDevice()->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque"])));
 
+    D3D12_GRAPHICS_PIPELINE_STATE_DESC opaque_wireframe;
+    opaque_wireframe = opaquePsoDesc;
+    opaquePsoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+    ThrowIfFailed(mDevice->DxDevice()->CreateGraphicsPipelineState(&opaquePsoDesc, IID_PPV_ARGS(&mPSOs["opaque_wireframe"])));
 }
 
 void LitColumns::OnUpdate()
@@ -255,6 +252,7 @@ void LitColumns::OnUpdate()
     XMMATRIX view = XMMatrixLookAtLH(pos, target, up);
     XMStoreFloat4x4(&mView, view);
 
+
     mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
     mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
@@ -268,9 +266,7 @@ void LitColumns::OnUpdate()
 
     auto currObjectCB = mCurrFrameResource->ObjectCB.get();
     for (auto& e : mAllRitems)
-    {
-        // Only update the cbuffer data if the constants have changed.  
-        // This needs to be tracked per frame resource.
+    {       
         if (e->NumFramesDirty > 0)
         {
             XMMATRIX world = XMLoadFloat4x4(&e->World);
@@ -282,17 +278,14 @@ void LitColumns::OnUpdate()
 
             currObjectCB->CopyData(e->ObjCBIndex, objConstants);
 
-            // Next FrameResource need to be updated too.
             e->NumFramesDirty--;
         }
     }
 
     auto currMaterialCB = mCurrFrameResource->MaterialCB.get();
-    for (auto& e : mMaterials)
-    {
-        // Only update the cbuffer data if the constants have changed.  If the cbuffer
-        // data changes, it needs to be updated for each FrameResource.
-        Material* mat = e.second.get();
+    for (auto& material : mMaterials)
+    {        
+        Material* mat = material.second.get();
         if (mat->NumFramesDirty > 0)
         {
             XMMATRIX matTransform = XMLoadFloat4x4(&mat->MatTransform);
@@ -301,15 +294,13 @@ void LitColumns::OnUpdate()
             matConstants.DiffuseAlbedo = mat->DiffuseAlbedo;
             matConstants.FresnelR0 = mat->FresnelR0;
             matConstants.Roughness = mat->Roughness;
-            XMStoreFloat4x4(&matConstants.MatTransform, XMMatrixTranspose(matTransform));
+            //XMStoreFloat4x4(&matConstants.MatTransform, XMMatrixTranspose(matTransform));
 
             currMaterialCB->CopyData(mat->MatCBIndex, matConstants);
 
-            // Next FrameResource need to be updated too.
             mat->NumFramesDirty--;
         }
     }
-
 
     {
         XMMATRIX view = XMLoadFloat4x4(&mView);
@@ -381,7 +372,6 @@ void LitColumns::OnRender()
     mCommandList->OMSetRenderTargets(1, &currentBackBufferView, true, &depthStencilView);
 
 
-
     mCommandList->SetGraphicsRootSignature(mRootSignature.Get());
     auto passCB = mCurrFrameResource->PassCB->Resource();
     mCommandList->SetGraphicsRootConstantBufferView(2, passCB->GetGPUVirtualAddress());
@@ -393,8 +383,7 @@ void LitColumns::OnRender()
 
         auto objectCB = mCurrFrameResource->ObjectCB->Resource();
         auto matCB = mCurrFrameResource->MaterialCB->Resource();
-
-        // For each render item...
+       
         for (size_t i = 0; i < mOpaqueRitems.size(); ++i)
         {
             auto ri = mOpaqueRitems[i];
@@ -415,7 +404,7 @@ void LitColumns::OnRender()
         }
     }
 
-
+     
 
     auto t2p = CD3DX12_RESOURCE_BARRIER::Transition(CurrentBackBuffer(),
         D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -470,8 +459,6 @@ void LitColumns::BuildMaterials()
     mMaterials["stone0"] = std::move(stone0);
     mMaterials["tile0"] = std::move(tile0);
     mMaterials["skullMat"] = std::move(skullMat);
-
-
 }
 
 void LitColumns::OnMouseDown(WPARAM btnState, int x, int y)
@@ -590,41 +577,19 @@ void LitColumns::BuildShapeGeometry()
         vertices[k].Normal = cylinder.Vertices[i].Normal;
     }
 
-    std::vector<std::uint16_t> indices;
+    std::vector<std::int32_t> indices;
     indices.insert(indices.end(), std::begin(box.GetIndices16()), std::end(box.GetIndices16()));
     indices.insert(indices.end(), std::begin(grid.GetIndices16()), std::end(grid.GetIndices16()));
     indices.insert(indices.end(), std::begin(sphere.GetIndices16()), std::end(sphere.GetIndices16()));
     indices.insert(indices.end(), std::begin(cylinder.GetIndices16()), std::end(cylinder.GetIndices16()));
-
-    const UINT vbByteSize = (UINT)vertices.size() * sizeof(PNVertex);
-    const UINT ibByteSize = (UINT)indices.size() * sizeof(std::uint16_t);
-
-    auto geo = std::make_unique<MeshGeometry>();
-    geo->Name = "shapeGeo";
     
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
+    std::unordered_map<std::string, SubmeshGeometry> subMeshMap;
+    subMeshMap.insert(std::pair<std::string, SubmeshGeometry>("box", boxSubmesh));
+    subMeshMap.insert(std::pair<std::string, SubmeshGeometry>("grid", gridSubmesh));
+    subMeshMap.insert(std::pair<std::string, SubmeshGeometry>("sphere", sphereSubmesh));
+    subMeshMap.insert(std::pair<std::string, SubmeshGeometry>("cylinder", cylinderSubmesh));
 
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    geo->VertexBufferGPU = DXHelper::CreateDefaultBuffer(mDevice->DxDevice(),
-        mCommandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-
-    geo->IndexBufferGPU = DXHelper::CreateDefaultBuffer(mDevice->DxDevice(),
-        mCommandList.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
-
-    geo->VertexByteStride = sizeof(PNVertex);
-    geo->VertexBufferByteSize = vbByteSize;
-    geo->IndexFormat = DXGI_FORMAT_R16_UINT;
-    geo->IndexBufferByteSize = ibByteSize;
-
-    geo->DrawArgs["box"] = boxSubmesh;
-    geo->DrawArgs["grid"] = gridSubmesh;
-    geo->DrawArgs["sphere"] = sphereSubmesh;
-    geo->DrawArgs["cylinder"] = cylinderSubmesh;
-
-    mGeometries[geo->Name] = std::move(geo);
+    BuildGeometry("shapeGeo", &vertices, &indices, &subMeshMap);
 }
 
 void LitColumns::BuildSkullGeometry()
@@ -665,38 +630,15 @@ void LitColumns::BuildSkullGeometry()
 
     fin.close();
 
-
-    const UINT vbByteSize = (UINT)vertices.size() * sizeof(PNVertex);
-    const UINT ibByteSize = (UINT)indices.size() * sizeof(std::int32_t);
-
-    auto geo = std::make_unique<MeshGeometry>();
-    geo->Name = "skullGeo";
-
-    ThrowIfFailed(D3DCreateBlob(vbByteSize, &geo->VertexBufferCPU));
-    CopyMemory(geo->VertexBufferCPU->GetBufferPointer(), vertices.data(), vbByteSize);
-
-    ThrowIfFailed(D3DCreateBlob(ibByteSize, &geo->IndexBufferCPU));
-    CopyMemory(geo->IndexBufferCPU->GetBufferPointer(), indices.data(), ibByteSize);
-
-    geo->VertexBufferGPU = DXHelper::CreateDefaultBuffer(mDevice->DxDevice(),
-        mCommandList.Get(), vertices.data(), vbByteSize, geo->VertexBufferUploader);
-
-    geo->IndexBufferGPU = DXHelper::CreateDefaultBuffer(mDevice->DxDevice(),
-        mCommandList.Get(), indices.data(), ibByteSize, geo->IndexBufferUploader);
-
-    geo->VertexByteStride = sizeof(PNVertex);
-    geo->VertexBufferByteSize = vbByteSize;
-    geo->IndexFormat = DXGI_FORMAT_R32_UINT;
-    geo->IndexBufferByteSize = ibByteSize;
-
     SubmeshGeometry submesh;
     submesh.IndexCount = (UINT)indices.size();
     submesh.StartIndexLocation = 0;
     submesh.BaseVertexLocation = 0;
+        
+    std::unordered_map<std::string, SubmeshGeometry> subMeshMap;
+    subMeshMap.insert(std::pair<std::string, SubmeshGeometry>("skull", submesh));
 
-    geo->DrawArgs["skull"] = submesh;
-
-    mGeometries[geo->Name] = std::move(geo);
+    BuildGeometry("skullGeo", &vertices, &indices, &subMeshMap);
 }
 
 

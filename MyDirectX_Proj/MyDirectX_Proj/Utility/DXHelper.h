@@ -160,7 +160,6 @@ struct Material
 
 	// 漫反射纹理在SRV堆中的索引。在第9章纹理贴图时会用到
 	int DiffuseSrvHeapIndex = -1;
-
 	int NormalSrvHeapIndex = 0;
 
 	// 已更新标志（dirty flag，也作脏标志）表示本材质已有变动，而我们也就需要更新常量缓冲区了。
